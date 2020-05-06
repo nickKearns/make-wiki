@@ -1,8 +1,13 @@
 from django.shortcuts import render
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-
+from django.views.generic import CreateView
+from django.views import generic
+from wiki.forms import PageForm
 from wiki.models import Page
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 
 class PageListView(ListView):
@@ -15,6 +20,16 @@ class PageListView(ListView):
         return render(request, 'list.html', {
           'pages': pages
         })
+
+
+class PageCreateView(CreateView):
+    model = Page
+    fields = ['title', 'content', 'author']
+    template_name = 'create.html'
+
+
+
+
 
 class PageDetailView(DetailView):
     """ Renders a specific page based on it's slug."""
