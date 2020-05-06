@@ -23,9 +23,9 @@ class PageListView(ListView):
 
 
 class PageCreateView(CreateView):
-    model = Page
-    fields = ['title', 'content', 'author']
-    template_name = 'create.html'
+    def get(self, request):
+      context = {'form': PageForm()}
+      return render(request, 'create.html', context)
 
 
 
