@@ -5,8 +5,9 @@ from django.views.generic import CreateView
 from django.views import generic
 from wiki.forms import PageForm
 from wiki.models import Page
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect
 
 
 
@@ -26,6 +27,17 @@ class PageCreateView(CreateView):
     def get(self, request):
       context = {'form': PageForm()}
       return render(request, 'create.html', context)
+
+    def post(self, request, *args, **kwargs):
+      form = PageForm(request.POST)
+      if form.is_valid():
+        page = form.save(commit=False)
+        page.author = request.user
+        page.save()
+        return HttpResponseRedirect(
+            reverse('wiki-details-page', args=[page.slug]))
+      # else if form is not valid
+      return render(request, 'create.html', { 'form': form })
 
 
 
