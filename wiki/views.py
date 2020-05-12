@@ -8,6 +8,7 @@ from wiki.models import Page
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
+from django.utils.text import slugify
 
 
 
@@ -51,5 +52,22 @@ class PageDetailView(DetailView):
         """ Returns a specific wiki page by slug. """
         page = self.get_queryset().get(slug__iexact=slug)
         return render(request, 'page.html', {
-          'page': page
+          'page': page,
+          'form': PageForm()
         })
+
+    def post(self, request, slug):
+      
+      form = PageForm(request.POST)
+
+      page = self.get_queryset().get(slug__iexact=slug)
+
+      page.title = request.POST['title']
+      page.content = request.POST['content']
+      page.author = request.user
+      page.slug = slugify(page.title)
+      page.save()
+      
+      return HttpResponseRedirect(reverse('wiki-details-page', args=[page.slug]))
+
+
