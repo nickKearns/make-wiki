@@ -65,7 +65,6 @@ class PageDetailView(DetailView):
       page.title = request.POST['title']
       page.content = request.POST['content']
       page.author = request.user
-      page.slug = slugify(page.title)
       page.save()
       
       return HttpResponseRedirect(reverse('wiki-details-page', args=[page.slug]))

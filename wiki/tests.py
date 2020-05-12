@@ -72,3 +72,21 @@ class WikiTestCase(TestCase):
 
         self.assertEqual(updated_page.title, 'changed title')
 
+
+
+    def test_create_page(self):
+
+        user = User.objects.create()
+
+
+        post_data = {
+            'title': 'testing title',
+            'author': user.id,
+            'content': 'content for running the test'
+        }
+
+        response = self.client.post('/create/', data=post_data)
+        self.assertEqual(response.status_code, 302)
+        test_page = Page.objects.get(title='testing title')
+        self.assertEqual(test_page.title, 'testing title')
+        
